@@ -16,16 +16,29 @@ app.use(express.json());
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.tg7jnth.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
-async function linkland(){
-try{
-const socialPostCollection=client.db('linklandSocial').collection('socialPosts');
+async function linkland() {
+    try {
+        const socialPostCollection = client.db('linklandSocial').collection('socialPosts');
 
+        //Create posts
+        app.post('/socialPosts', async (req, res) => {
+            const post = req.body;
+            const result = await socialPostCollection.insertOne(post);
+            res.send(result);
+            console.log(result)
+        });
 
+        //data get
+        app.get('/socialPosts', async (req, res) => {
+            const query = {};
+            const posts = await socialPostCollection.find(query).toArray();
+            res.send(posts);
+        })
 
-}
-finally{
+    }
+    finally {
 
-}
+    }
 
 }
 linkland().catch(console.log);
